@@ -1,0 +1,299 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.5rem;
+  
+  /* Theme variables */
+  --theme-bg: hsl(0, 0%, 97%);
+  --theme-surface: hsl(0, 0%, 100%);
+  --theme-card: hsl(0, 0%, 100%);
+  --theme-text: hsl(222, 84%, 5%);
+  --theme-text-muted: hsl(215, 16%, 47%);
+  --theme-accent: hsl(221, 83%, 53%);
+  --theme-accent-hover: hsl(221, 83%, 43%);
+  --theme-border: hsl(214, 32%, 91%);
+  --theme-success: hsl(142, 76%, 36%);
+  --theme-danger: hsl(0, 84%, 60%);
+  --theme-warning: hsl(38, 92%, 50%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+  
+  /* Dark theme variables */
+  --theme-bg: hsl(222, 84%, 5%);
+  --theme-surface: hsl(217, 33%, 17%);
+  --theme-card: hsl(215, 28%, 17%);
+  --theme-text: hsl(210, 40%, 98%);
+  --theme-text-muted: hsl(215, 20%, 65%);
+  --theme-accent: hsl(217, 91%, 60%);
+  --theme-accent-hover: hsl(221, 83%, 53%);
+  --theme-border: hsl(217, 33%, 33%);
+  --theme-success: hsl(142, 71%, 45%);
+  --theme-danger: hsl(0, 91%, 71%);
+  --theme-warning: hsl(48, 96%, 53%);
+}
+
+[data-theme="wallstreet"] {
+  /* Wall Street theme - Luxurious black and gold */
+  --background: hsl(0, 0%, 5%);
+  --foreground: hsl(51, 100%, 85%);
+  --muted: hsl(0, 0%, 15%);
+  --muted-foreground: hsl(45, 20%, 65%);
+  --popover: hsl(0, 0%, 8%);
+  --popover-foreground: hsl(51, 100%, 85%);
+  --card: hsl(0, 0%, 8%);
+  --card-foreground: hsl(51, 100%, 85%);
+  --border: hsl(45, 25%, 25%);
+  --input: hsl(0, 0%, 15%);
+  --primary: hsl(51, 100%, 50%);
+  --primary-foreground: hsl(0, 0%, 0%);
+  --secondary: hsl(0, 0%, 15%);
+  --secondary-foreground: hsl(51, 100%, 85%);
+  --accent: hsl(45, 100%, 45%);
+  --accent-foreground: hsl(0, 0%, 0%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(51, 100%, 50%);
+
+  --theme-bg: linear-gradient(135deg, hsl(0, 0%, 0%) 0%, hsl(0, 0%, 8%) 50%, hsl(45, 15%, 5%) 100%);
+  --theme-surface: hsla(0, 0%, 8%, 0.95);
+  --theme-card: hsla(0, 0%, 12%, 0.98);
+  --theme-text: hsl(51, 100%, 85%);
+  --theme-text-muted: hsl(45, 30%, 65%);
+  --theme-accent: hsl(51, 100%, 50%);
+  --theme-accent-hover: hsl(45, 100%, 60%);
+  --theme-border: hsl(45, 25%, 20%);
+  --theme-success: hsl(142, 76%, 50%);
+  --theme-danger: hsl(0, 84%, 60%);
+  --theme-warning: hsl(38, 92%, 50%);
+}
+
+[data-theme="techinvestor"] {
+  /* Tech Investor theme - Futuristic blue and cyan */
+  --background: hsl(221, 55%, 8%);
+  --foreground: hsl(199, 100%, 88%);
+  --muted: hsl(221, 55%, 15%);
+  --muted-foreground: hsl(199, 50%, 70%);
+  --popover: hsl(221, 55%, 10%);
+  --popover-foreground: hsl(199, 100%, 88%);
+  --card: hsl(221, 55%, 10%);
+  --card-foreground: hsl(199, 100%, 88%);
+  --border: hsl(188, 50%, 30%);
+  --input: hsl(221, 55%, 15%);
+  --primary: hsl(188, 94%, 43%);
+  --primary-foreground: hsl(221, 55%, 8%);
+  --secondary: hsl(221, 55%, 15%);
+  --secondary-foreground: hsl(199, 100%, 88%);
+  --accent: hsl(188, 94%, 43%);
+  --accent-foreground: hsl(221, 55%, 8%);
+  --destructive: hsl(347, 77%, 50%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(188, 94%, 43%);
+
+  --theme-bg: linear-gradient(135deg, hsl(221, 55%, 5%) 0%, hsl(259, 44%, 8%) 50%, hsl(188, 30%, 10%) 100%);
+  --theme-surface: hsla(221, 55%, 12%, 0.95);
+  --theme-card: hsla(221, 55%, 15%, 0.98);
+  --theme-text: hsl(199, 100%, 88%);
+  --theme-text-muted: hsl(199, 50%, 70%);
+  --theme-accent: hsl(188, 94%, 43%);
+  --theme-accent-hover: hsl(188, 94%, 53%);
+  --theme-border: hsl(188, 50%, 25%);
+  --theme-success: hsl(142, 76%, 45%);
+  --theme-danger: hsl(347, 77%, 50%);
+  --theme-warning: hsl(25, 95%, 53%);
+}
+
+[data-theme="hedgefund"] {
+  /* Hedge Fund theme - Elite dark green and black */
+  --background: hsl(0, 0%, 2%);
+  --foreground: hsl(160, 84%, 39%);
+  --muted: hsl(0, 0%, 10%);
+  --muted-foreground: hsl(160, 20%, 45%);
+  --popover: hsl(0, 0%, 5%);
+  --popover-foreground: hsl(160, 84%, 39%);
+  --card: hsl(0, 0%, 5%);
+  --card-foreground: hsl(160, 84%, 39%);
+  --border: hsl(160, 30%, 20%);
+  --input: hsl(0, 0%, 10%);
+  --primary: hsl(160, 84%, 39%);
+  --primary-foreground: hsl(0, 0%, 0%);
+  --secondary: hsl(0, 0%, 10%);
+  --secondary-foreground: hsl(160, 84%, 39%);
+  --accent: hsl(160, 84%, 39%);
+  --accent-foreground: hsl(0, 0%, 0%);
+  --destructive: hsl(0, 73%, 41%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(160, 84%, 39%);
+
+  --theme-bg: linear-gradient(135deg, hsl(0, 0%, 0%) 0%, hsl(160, 15%, 2%) 50%, hsl(0, 0%, 3%) 100%);
+  --theme-surface: hsla(0, 0%, 8%, 0.95);
+  --theme-card: hsla(0, 0%, 12%, 0.98);
+  --theme-text: hsl(160, 84%, 39%);
+  --theme-text-muted: hsl(160, 25%, 50%);
+  --theme-accent: hsl(160, 84%, 39%);
+  --theme-accent-hover: hsl(160, 84%, 49%);
+  --theme-border: hsl(160, 30%, 15%);
+  --theme-success: hsl(142, 71%, 45%);
+  --theme-danger: hsl(0, 73%, 41%);
+  --theme-warning: hsl(48, 96%, 53%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased;
+    background: var(--theme-bg);
+    color: var(--theme-text);
+  }
+
+  /* Custom theme utilities */
+  .theme-transition {
+    transition: all 0.3s ease-in-out;
+  }
+
+  .theme-bg {
+    background: var(--theme-bg);
+  }
+
+  .theme-surface {
+    background: var(--theme-surface);
+  }
+
+  .theme-card {
+    background: var(--theme-card);
+  }
+
+  .theme-border {
+    border-color: var(--theme-border);
+  }
+
+  .theme-text {
+    color: var(--theme-text);
+  }
+
+  .theme-text-muted {
+    color: var(--theme-text-muted);
+  }
+
+  .theme-accent {
+    background: var(--theme-accent);
+  }
+
+  .theme-accent-text {
+    color: var(--theme-accent);
+  }
+
+  .theme-success {
+    color: var(--theme-success);
+  }
+
+  .theme-danger {
+    color: var(--theme-danger);
+  }
+
+  .theme-warning {
+    color: var(--theme-warning);
+  }
+
+  /* Enhanced animations */
+  .stock-ticker {
+    animation: ticker 45s linear infinite;
+  }
+
+  @keyframes ticker {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+
+  .pulse-dot {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .5; }
+  }
+
+  .gradient-text {
+    background: linear-gradient(45deg, var(--theme-accent), var(--theme-success));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+  }
+
+  .backdrop-blur-custom {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  /* Enhanced glassmorphism effects */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  /* Smooth hover effects */
+  .hover-glow:hover {
+    box-shadow: 0 0 20px rgba(var(--theme-accent), 0.3);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+  }
+
+  /* Loading skeleton animation */
+  .skeleton {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+  }
+
+  @keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+}
