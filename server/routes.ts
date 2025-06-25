@@ -10,8 +10,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/market/data", async (req, res) => {
     try {
       const data = await smtApi.getMarketData();
+      console.log('Market data response:', data ? `Found ${data.sharemarket?.length || 0} stocks` : 'No data');
       res.json(data);
     } catch (error: any) {
+      console.error('Market data error:', error.message);
       res.status(500).json({ error: error.message });
     }
   });

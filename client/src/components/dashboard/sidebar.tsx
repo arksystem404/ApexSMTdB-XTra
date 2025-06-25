@@ -22,6 +22,7 @@ export function Sidebar({ activeSection, setActiveSection, watchlistCount }: Sid
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'market', label: 'Stock Market', icon: TrendingUp },
     { id: 'watchlist', label: 'Watchlist', icon: Heart, badge: watchlistCount },
     { id: 'ai-fund', label: 'AI Investment Fund', icon: Brain },
     { id: 'screener', label: 'Stock Screener', icon: Search },

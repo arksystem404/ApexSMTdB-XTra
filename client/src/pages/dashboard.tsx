@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Sidebar } from '@/components/dashboard/sidebar';
+import { MarketOverview } from '@/components/dashboard/market-overview';
 import { Watchlist } from '@/components/dashboard/watchlist';
 import { AIInvestmentFund } from '@/components/dashboard/ai-investment-fund';
 import { StockScreener } from '@/components/dashboard/stock-screener';
@@ -28,7 +29,7 @@ import type { WatchlistItem } from '@shared/schema';
 const MOCK_USER_ID = 1; // For demo purposes
 
 export default function Dashboard() {
-  const [activeSection, setActiveSection] = useState('dashboard');
+  const [activeSection, setActiveSection] = useState('market');
 
   const { data: watchlistItems = [] } = useQuery<WatchlistItem[]>({
     queryKey: [`/api/watchlist/${MOCK_USER_ID}`],
@@ -49,6 +50,12 @@ export default function Dashboard() {
 
   const renderMainContent = () => {
     switch (activeSection) {
+      case 'market':
+        return (
+          <div className="max-w-6xl">
+            <MarketOverview />
+          </div>
+        );
       case 'watchlist':
         return (
           <div className="max-w-6xl">
