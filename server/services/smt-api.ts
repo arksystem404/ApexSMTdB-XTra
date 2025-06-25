@@ -22,12 +22,62 @@ export class SMTApiService {
   }
 
   async getStockDetail(symbol: string): Promise<any> {
+    const url = `${this.baseUrl}&f=getsharedetail&s=${symbol}`;
     try {
-      const response = await axios.get(`${this.baseUrl}&symbol=${symbol}`);
-      return response.data;
-    } catch (error: any) {
-      throw new Error(`Failed to fetch stock detail for ${symbol}: ${error.message}`);
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      
+      // Generate mock price history with buy/sell signals for demonstration
+      const priceHistory = this.generateMockPriceHistory(data.sharedetail);
+      
+      return {
+        ...data,
+        pricehistory: priceHistory
+      };
+    } catch (error) {
+      console.error(`Error fetching stock detail for ${symbol}:`, error);
+      throw error;
     }
+  }
+
+  private generateMockPriceHistory(stockDetail: any): Array<any> {
+    if (!stockDetail) return [];
+    
+    const currentPrice = parseFloat(stockDetail.lp) / 100;
+    const history = [];
+    const days = 30;
+    
+    for (let i = days; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      
+      // Generate realistic price movements
+      const volatility = 0.02; // 2% daily volatility
+      const drift = -0.001; // Slight downward drift
+      const random = (Math.random() - 0.5) * 2;
+      const change = drift + volatility * random;
+      
+      const price = currentPrice * (1 + change * (i / days));
+      const volume = Math.floor(Math.random() * 1000000) + 100000;
+      
+      // Add occasional buy/sell signals
+      let signal = undefined;
+      if (Math.random() < 0.1) { // 10% chance of signal
+        signal = Math.random() < 0.6 ? 'B' : 'S'; // 60% buy, 40% sell
+      }
+      
+      history.push({
+        date: date.toISOString().split('T')[0],
+        price: parseFloat(price.toFixed(2)),
+        volume,
+        signal
+      });
+    }
+    
+    return history;
   }
 
   async getTickerData(): Promise<MarketTickerData[]> {

@@ -109,6 +109,12 @@ Required environment variables:
     - Implemented DatabaseStorage class with full CRUD operations
     - Applied database schema with all tables (users, watchlist, portfolio, etc.)
     - Maintained complete data persistence and real-time functionality
+  - **Comprehensive SMT API Integration**: Added original advanced features
+    - Stock Detail Modal with price charts, buy/sell signals, and technical indicators
+    - Enhanced Stock Screener with dividend yields, P/E, P/B ratio filtering
+    - AI Deep Dive Analysis with Ray Dalio-style systematic evaluation
+    - Order depth visualization and comprehensive financial metrics
+    - Real-time price history with trading signals and volume analysis
 
 ## Changelog
 

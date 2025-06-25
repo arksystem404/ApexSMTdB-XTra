@@ -46,6 +46,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Stock detail routes
+  app.get('/api/stocks/detail/:symbol', async (req, res) => {
+    try {
+      const { symbol } = req.params;
+      const data = await smtApi.getStockDetail(symbol);
+      res.json(data);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch stock details' });
+    }
+  });
+
+  // AI stock analysis route
+  app.post('/api/ai/stock-analysis', async (req, res) => {
+    try {
+      const { symbol, stockData, orderSummary, priceHistory } = req.body;
+      const analysis = await analyzeStock(symbol, { 
+        sharedetail: stockData, 
+        ordersummary: orderSummary, 
+        pricehistory: priceHistory 
+      });
+      res.json({ analysis: analysis.analysis });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to generate AI analysis' });
+    }
+  });
+
   // Watchlist routes
   app.get("/api/watchlist/:userId", async (req, res) => {
     try {
