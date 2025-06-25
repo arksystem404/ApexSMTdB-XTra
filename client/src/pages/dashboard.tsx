@@ -8,6 +8,9 @@ import { Watchlist } from '@/components/dashboard/watchlist';
 import { AIInvestmentFund } from '@/components/dashboard/ai-investment-fund';
 import { StockScreener } from '@/components/dashboard/stock-screener';
 import { MarketTicker } from '@/components/dashboard/market-ticker';
+import { AIStockPicker } from '@/components/dashboard/ai-stock-picker';
+import { MarketQA } from '@/components/dashboard/market-qa';
+import { UserProfile } from '@/components/dashboard/user-profile';
 import { 
   Bell, 
   Settings, 
@@ -54,37 +57,44 @@ export default function Dashboard() {
         );
       case 'ai-fund':
         return (
-          <div className="max-w-4xl space-y-6">
-            <AIInvestmentFund />
+          <div className="max-w-6xl space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <AIInvestmentFund />
+              <AIStockPicker />
+            </div>
             
-            {/* Market Signals */}
-            <Card className="theme-card theme-border">
-              <CardContent className="p-6">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center">
-                    <Activity className="w-4 h-4 text-white" />
-                  </div>
-                  <h3 className="text-lg font-semibold theme-text">Market Signals</h3>
-                </div>
-                
-                <div className="space-y-3">
-                  {marketSignals.map((signal, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 rounded-lg theme-surface">
-                      <div className="flex items-center space-x-3">
-                        <div className={`w-2 h-2 rounded-full ${signal.color}`}></div>
-                        <span className="text-sm font-medium theme-text">{signal.sector}</span>
-                      </div>
-                      <Badge 
-                        variant="secondary" 
-                        className={`${signal.color} text-white text-xs`}
-                      >
-                        {signal.signal}
-                      </Badge>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <MarketQA />
+              
+              {/* Market Signals */}
+              <Card className="theme-card theme-border">
+                <CardContent className="p-6">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center">
+                      <Activity className="w-4 h-4 text-white" />
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                    <h3 className="text-lg font-semibold theme-text">Market Signals</h3>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    {marketSignals.map((signal, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 rounded-lg theme-surface">
+                        <div className="flex items-center space-x-3">
+                          <div className={`w-2 h-2 rounded-full ${signal.color}`}></div>
+                          <span className="text-sm font-medium theme-text">{signal.sector}</span>
+                        </div>
+                        <Badge 
+                          variant="secondary" 
+                          className={`${signal.color} text-white text-xs`}
+                        >
+                          {signal.signal}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         );
       case 'screener':
@@ -205,6 +215,8 @@ export default function Dashboard() {
               <div className="space-y-6">
                 <AIInvestmentFund />
                 
+                <AIStockPicker />
+                
                 {/* Quick Screener Preview */}
                 <Card className="theme-card theme-border">
                   <CardContent className="p-6">
@@ -265,11 +277,9 @@ export default function Dashboard() {
           <MarketTicker />
 
           <div className="flex items-center space-x-3">
+            <UserProfile />
             <Button variant="outline" size="sm" className="theme-card theme-border theme-text">
               <Bell className="w-5 h-5" />
-            </Button>
-            <Button variant="outline" size="sm" className="theme-card theme-border theme-text">
-              <Settings className="w-5 h-5" />
             </Button>
           </div>
         </header>

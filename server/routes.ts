@@ -180,6 +180,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // AI Stock Picker route
+  app.post("/api/ai/stock-picker", async (req, res) => {
+    try {
+      const { userId } = req.body;
+      const marketData = await smtApi.getMarketData();
+      const analysis = await answerMarketQuestion(
+        "Based on current market conditions, recommend 3-5 stocks with high potential. Include reasoning for each pick.",
+        marketData
+      );
+      
+      // Store the analysis
+      await storage.createAiAnalysis({
+        userId,
+        analysisType: 'stock_picker',
+        analysis,
+        confidence: '0.85'
+      });
+
+      res.json({ analysis });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // User settings routes
   app.get("/api/settings/:userId", async (req, res) => {
     try {

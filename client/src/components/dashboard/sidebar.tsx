@@ -21,8 +21,8 @@ export function Sidebar({ activeSection, setActiveSection, watchlistCount }: Sid
   const { theme, setTheme } = useThemeContext();
 
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, active: true },
-    { id: 'watchlist', label: 'Watchlist', icon: Heart, badge: watchlistCount, primary: true },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'watchlist', label: 'Watchlist', icon: Heart, badge: watchlistCount },
     { id: 'ai-fund', label: 'AI Investment Fund', icon: Brain },
     { id: 'screener', label: 'Stock Screener', icon: Search },
     { id: 'journal', label: 'Trading Journal', icon: BookOpen, disabled: true },
@@ -75,15 +75,10 @@ export function Sidebar({ activeSection, setActiveSection, watchlistCount }: Sid
                     {item.badge}
                   </Badge>
                 )}
-                {item.primary && (
-                  <Badge variant="secondary" className="ml-auto theme-accent text-white text-xs">
-                    Primary
-                  </Badge>
-                )}
                 {item.disabled && (
-                  <Badge variant="outline" className="ml-auto theme-warning text-black text-xs">
-                    Disabled
-                  </Badge>
+                  <span className="ml-auto text-xs theme-text-muted opacity-60">
+                    Off
+                  </span>
                 )}
               </Button>
             );

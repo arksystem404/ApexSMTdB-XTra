@@ -51,18 +51,27 @@ export function Watchlist() {
     if (!searchSymbol.trim()) return;
     
     try {
-      const response = await apiRequest('POST', '/api/stocks/screen', {
-        // Search by symbol or company name - this would be enhanced in a real implementation
-      });
-      const data = await response.json();
-      
-      // Filter results by symbol match for now
-      const filtered = data.filter((stock: StockData) => 
-        stock.symbol.toLowerCase().includes(searchSymbol.toLowerCase()) ||
-        stock.companyName.toLowerCase().includes(searchSymbol.toLowerCase())
-      );
-      
-      setSearchResults(filtered.slice(0, 10)); // Limit to 10 results
+      // Use live market data for search
+      if (marketData && marketData.shareMarketData) {
+        const filtered = marketData.shareMarketData
+          .filter((stock: any) => {
+            const symbol = stock.sName || stock.symbol || '';
+            const companyName = stock.sCompanyName || stock.companyName || stock.sName || '';
+            return symbol.toLowerCase().includes(searchSymbol.toLowerCase()) ||
+                   companyName.toLowerCase().includes(searchSymbol.toLowerCase());
+          })
+          .slice(0, 10)
+          .map((stock: any) => ({
+            symbol: stock.sName || stock.symbol || 'N/A',
+            companyName: stock.sCompanyName || stock.companyName || stock.sName || 'N/A',
+            price: parseFloat(stock.sPrice) / 100 || 0,
+            change: parseFloat(stock.sChange) / 100 || 0,
+            changePercent: parseFloat(stock.sChangePercent) || parseFloat(stock.sChange) || 0,
+            volume: parseInt(stock.sVolume) || 0,
+          }));
+        
+        setSearchResults(filtered);
+      }
     } catch (error) {
       console.error('Failed to search stocks:', error);
     }
@@ -74,19 +83,39 @@ export function Watchlist() {
     }
   };
 
-  // Mock stock data for watchlist items with current prices
+  // Get live stock data from SMT API
+  const { data: marketData } = useQuery({
+    queryKey: ['/api/market/data'],
+    refetchInterval: 30000, // Refresh every 30 seconds
+  });
+
   const getStockData = (symbol: string): StockData => {
-    const mockPrices: Record<string, StockData> = {
-      'AAPL': { symbol: 'AAPL', companyName: 'Apple Inc.', price: 178.45, change: 4.32, changePercent: 2.45, volume: 45200000 },
-      'GOOGL': { symbol: 'GOOGL', companyName: 'Alphabet Inc.', price: 2745.30, change: -34.12, changePercent: -1.23, volume: 12800000 },
-      'MSFT': { symbol: 'MSFT', companyName: 'Microsoft Corp.', price: 412.78, change: 3.56, changePercent: 0.87, volume: 28400000 },
-      'TSLA': { symbol: 'TSLA', companyName: 'Tesla Inc.', price: 245.67, change: 7.84, changePercent: 3.21, volume: 82100000 },
-    };
+    if (marketData && marketData.shareMarketData) {
+      const stock = marketData.shareMarketData.find((s: any) => 
+        (s.sName || s.symbol) === symbol
+      );
+      
+      if (stock) {
+        return {
+          symbol: stock.sName || stock.symbol || symbol,
+          companyName: stock.sCompanyName || stock.companyName || stock.sName || 'Unknown Company',
+          price: parseFloat(stock.sPrice) / 100 || 0,
+          change: parseFloat(stock.sChange) / 100 || 0,
+          changePercent: parseFloat(stock.sChangePercent) || parseFloat(stock.sChange) || 0,
+          volume: parseInt(stock.sVolume) || 0,
+          marketCap: parseFloat(stock.sMarketCap) || undefined,
+          pe: parseFloat(stock.sPE) / 100 || undefined,
+          pb: parseFloat(stock.sPB) / 100 || undefined,
+          dividendYield: parseFloat(stock.sDividendYield) / 100 || undefined,
+        };
+      }
+    }
     
-    return mockPrices[symbol] || { 
+    // Fallback if stock not found in current market data
+    return { 
       symbol, 
-      companyName: 'Unknown Company', 
-      price: 100, 
+      companyName: 'Loading...', 
+      price: 0, 
       change: 0, 
       changePercent: 0, 
       volume: 0 
@@ -116,7 +145,6 @@ export function Watchlist() {
             <Heart className="w-4 h-4 text-white" />
           </div>
           <h3 className="text-lg font-semibold theme-text">Watchlist</h3>
-          <Badge className="theme-accent text-white">Primary Feature</Badge>
         </div>
         
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>

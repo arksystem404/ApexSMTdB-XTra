@@ -16,7 +16,7 @@ export class SMTApiService {
     try {
       const response = await axios.get(this.baseUrl);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(`Failed to fetch market data: ${error.message}`);
     }
   }
@@ -25,7 +25,7 @@ export class SMTApiService {
     try {
       const response = await axios.get(`${this.baseUrl}&symbol=${symbol}`);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(`Failed to fetch stock detail for ${symbol}: ${error.message}`);
     }
   }
@@ -34,17 +34,17 @@ export class SMTApiService {
     try {
       const marketData = await this.getMarketData();
       
-      // Extract ticker data from SMT API response
+      // Extract ticker data from SMT API response - using authentic structure
       if (marketData && marketData.shareMarketData) {
-        return marketData.shareMarketData.slice(0, 10).map((stock: any) => ({
-          symbol: stock.sName || stock.symbol,
-          price: parseFloat(stock.sPrice) || 0,
-          changePercent: parseFloat(stock.sChange) || 0
+        return marketData.shareMarketData.slice(0, 15).map((stock: any) => ({
+          symbol: stock.sName || stock.symbol || 'N/A',
+          price: parseFloat(stock.sPrice) / 100 || 0, // SMT API returns price * 100
+          changePercent: parseFloat(stock.sChangePercent) || parseFloat(stock.sChange) || 0
         }));
       }
       
       return [];
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch ticker data:', error);
       return [];
     }
@@ -71,15 +71,15 @@ export class SMTApiService {
 
       let stocks = marketData.shareMarketData.map((stock: any) => ({
         symbol: stock.sName || stock.symbol || 'N/A',
-        companyName: stock.companyName || stock.sName || 'N/A',
-        price: parseFloat(stock.sPrice) || 0,
-        change: parseFloat(stock.sChange) || 0,
-        changePercent: parseFloat(stock.sChangePercent) || 0,
+        companyName: stock.sCompanyName || stock.companyName || stock.sName || 'N/A',
+        price: parseFloat(stock.sPrice) / 100 || 0, // SMT API returns price * 100
+        change: parseFloat(stock.sChange) / 100 || 0,
+        changePercent: parseFloat(stock.sChangePercent) || parseFloat(stock.sChange) || 0,
         volume: parseInt(stock.sVolume) || 0,
         marketCap: parseFloat(stock.sMarketCap) || undefined,
-        pe: parseFloat(stock.sPE) || undefined,
-        pb: parseFloat(stock.sPB) || undefined,
-        dividendYield: parseFloat(stock.sDividendYield) || undefined,
+        pe: parseFloat(stock.sPE) / 100 || undefined,
+        pb: parseFloat(stock.sPB) / 100 || undefined,
+        dividendYield: parseFloat(stock.sDividendYield) / 100 || undefined,
       }));
 
       // Apply filters
@@ -115,7 +115,7 @@ export class SMTApiService {
       }
 
       return stocks;
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(`Failed to search stocks: ${error.message}`);
     }
   }
