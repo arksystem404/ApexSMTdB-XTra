@@ -105,6 +105,10 @@ Required environment variables:
   - Removed unwanted features: historical data viewer, news sentiment analysis, economic calendar
   - Trading Journal remains disabled by default
   - Improved glassmorphism effects and animations for professional appearance
+  - **Database Integration**: Migrated from in-memory storage to PostgreSQL database
+    - Implemented DatabaseStorage class with full CRUD operations
+    - Applied database schema with all tables (users, watchlist, portfolio, etc.)
+    - Maintained complete data persistence and real-time functionality
 
 ## Changelog
 

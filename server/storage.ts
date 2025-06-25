@@ -6,6 +6,8 @@ import {
   type MarketSignal, type InsertMarketSignal, type TradingJournalEntry, type InsertTradingJournalEntry,
   type UserSettings, type InsertUserSettings
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, and, desc } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -277,4 +279,156 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async getUserByFirebaseUid(firebaseUid: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.firebaseUid, firebaseUid));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db.insert(users).values(insertUser).returning();
+    return user;
+  }
+
+  async updateUser(id: number, updateData: Partial<InsertUser>): Promise<User> {
+    const [user] = await db.update(users).set(updateData).where(eq(users.id, id)).returning();
+    return user;
+  }
+
+  async getWatchlistItems(userId: number): Promise<WatchlistItem[]> {
+    return await db.select().from(watchlistItems).where(eq(watchlistItems.userId, userId));
+  }
+
+  async addWatchlistItem(item: InsertWatchlistItem): Promise<WatchlistItem> {
+    const [watchlistItem] = await db.insert(watchlistItems).values(item).returning();
+    return watchlistItem;
+  }
+
+  async removeWatchlistItem(id: number, userId: number): Promise<boolean> {
+    const result = await db.delete(watchlistItems).where(and(eq(watchlistItems.id, id), eq(watchlistItems.userId, userId)));
+    return result.rowCount > 0;
+  }
+
+  async toggleWatchlistItem(id: number, userId: number, isActive: boolean): Promise<WatchlistItem> {
+    const [item] = await db.update(watchlistItems)
+      .set({ isActive })
+      .where(and(eq(watchlistItems.id, id), eq(watchlistItems.userId, userId)))
+      .returning();
+    return item;
+  }
+
+  async getPortfolioHoldings(userId: number): Promise<PortfolioHolding[]> {
+    return await db.select().from(portfolioHoldings).where(eq(portfolioHoldings.userId, userId));
+  }
+
+  async upsertPortfolioHolding(holding: InsertPortfolioHolding): Promise<PortfolioHolding> {
+    const existingHolding = await db.select().from(portfolioHoldings)
+      .where(and(eq(portfolioHoldings.userId, holding.userId), eq(portfolioHoldings.symbol, holding.symbol)))
+      .limit(1);
+
+    if (existingHolding.length > 0) {
+      const [updated] = await db.update(portfolioHoldings)
+        .set(holding)
+        .where(eq(portfolioHoldings.id, existingHolding[0].id))
+        .returning();
+      return updated;
+    } else {
+      const [created] = await db.insert(portfolioHoldings).values(holding).returning();
+      return created;
+    }
+  }
+
+  async deletePortfolioHolding(id: number, userId: number): Promise<boolean> {
+    const result = await db.delete(portfolioHoldings).where(and(eq(portfolioHoldings.id, id), eq(portfolioHoldings.userId, userId)));
+    return result.rowCount > 0;
+  }
+
+  async getAiAnalysis(userId: number, analysisType?: string): Promise<AiAnalysis[]> {
+    let query = db.select().from(aiAnalysis).where(eq(aiAnalysis.userId, userId));
+    if (analysisType) {
+      query = query.where(eq(aiAnalysis.analysisType, analysisType));
+    }
+    return await query.orderBy(desc(aiAnalysis.createdAt));
+  }
+
+  async createAiAnalysis(analysis: InsertAiAnalysis): Promise<AiAnalysis> {
+    const [created] = await db.insert(aiAnalysis).values(analysis).returning();
+    return created;
+  }
+
+  async getLatestAiAnalysis(userId: number, analysisType: string, symbol?: string): Promise<AiAnalysis | undefined> {
+    let query = db.select().from(aiAnalysis)
+      .where(and(eq(aiAnalysis.userId, userId), eq(aiAnalysis.analysisType, analysisType)));
+    
+    if (symbol) {
+      query = query.where(eq(aiAnalysis.symbol, symbol));
+    }
+    
+    const [latest] = await query.orderBy(desc(aiAnalysis.createdAt)).limit(1);
+    return latest || undefined;
+  }
+
+  async getMarketSignals(): Promise<MarketSignal[]> {
+    return await db.select().from(marketSignals).orderBy(desc(marketSignals.createdAt));
+  }
+
+  async upsertMarketSignal(signal: InsertMarketSignal): Promise<MarketSignal> {
+    const existingSignal = await db.select().from(marketSignals)
+      .where(eq(marketSignals.symbol, signal.symbol))
+      .limit(1);
+
+    if (existingSignal.length > 0) {
+      const [updated] = await db.update(marketSignals)
+        .set(signal)
+        .where(eq(marketSignals.id, existingSignal[0].id))
+        .returning();
+      return updated;
+    } else {
+      const [created] = await db.insert(marketSignals).values(signal).returning();
+      return created;
+    }
+  }
+
+  async getTradingJournalEntries(userId: number): Promise<TradingJournalEntry[]> {
+    return await db.select().from(tradingJournalEntries).where(eq(tradingJournalEntries.userId, userId)).orderBy(desc(tradingJournalEntries.createdAt));
+  }
+
+  async createTradingJournalEntry(entry: InsertTradingJournalEntry): Promise<TradingJournalEntry> {
+    const [created] = await db.insert(tradingJournalEntries).values(entry).returning();
+    return created;
+  }
+
+  async getUserSettings(userId: number): Promise<UserSettings | undefined> {
+    const [settings] = await db.select().from(userSettings).where(eq(userSettings.userId, userId));
+    return settings || undefined;
+  }
+
+  async upsertUserSettings(settings: InsertUserSettings): Promise<UserSettings> {
+    const existingSettings = await db.select().from(userSettings)
+      .where(eq(userSettings.userId, settings.userId))
+      .limit(1);
+
+    if (existingSettings.length > 0) {
+      const [updated] = await db.update(userSettings)
+        .set(settings)
+        .where(eq(userSettings.id, existingSettings[0].id))
+        .returning();
+      return updated;
+    } else {
+      const [created] = await db.insert(userSettings).values(settings).returning();
+      return created;
+    }
+  }
+}
+
+export const storage = new DatabaseStorage();
