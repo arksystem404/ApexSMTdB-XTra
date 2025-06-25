@@ -13,10 +13,16 @@ export class SMTApiService {
   }
 
   async getMarketData(): Promise<any> {
+    const url = `${this.baseUrl}&f=getsharemarket`;
     try {
-      const response = await axios.get(this.baseUrl);
-      return response.data;
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
     } catch (error: any) {
+      console.error('Error fetching market data:', error);
       throw new Error(`Failed to fetch market data: ${error.message}`);
     }
   }
@@ -115,22 +121,27 @@ export class SMTApiService {
     try {
       const marketData = await this.getMarketData();
       
-      if (!marketData || !marketData.shareMarketData) {
-        return [];
-      }
-
-      let stocks = marketData.shareMarketData.map((stock: any) => ({
-        symbol: stock.sName || stock.symbol || 'N/A',
-        companyName: stock.sCompanyName || stock.companyName || stock.sName || 'N/A',
-        price: parseFloat(stock.sPrice) / 100 || 0, // SMT API returns price * 100
-        change: parseFloat(stock.sChange) / 100 || 0,
-        changePercent: parseFloat(stock.sChangePercent) || parseFloat(stock.sChange) || 0,
-        volume: parseInt(stock.sVolume) || 0,
-        marketCap: parseFloat(stock.sMarketCap) || undefined,
-        pe: parseFloat(stock.sPE) / 100 || undefined,
-        pb: parseFloat(stock.sPB) / 100 || undefined,
-        dividendYield: parseFloat(stock.sDividendYield) / 100 || undefined,
-      }));
+      // Using authentic SMT API structure from guide
+      if (marketData && marketData.sharemarket) {
+        stocks = marketData.sharemarket.map((stock: any) => {
+          const price = parseFloat(stock.lp) / 100 || 0; // lp = Last Price * 100
+          const eps = parseFloat(stock.leps) / 100 || 0; // leps = Last EPS * 100
+          const bookValue = parseFloat(stock.bv) / 100 || 0; // bv = Book Value
+          const dividend = parseFloat(stock.ld) / 100 || 0; // ld = Last Dividends * 100
+          
+          return {
+            symbol: stock.sID || 'N/A', // sID = Stock Symbol
+            companyName: stock.n || 'Unknown Company', // n = Stock Name
+            price: price,
+            change: parseFloat(stock.lm) / 100 || 0, // lm = Last Movement * 100
+            changePercent: ((parseFloat(stock.lm) / 100) / price) * 100 || 0,
+            volume: parseInt(stock.v) || 0, // v = Volume
+            marketCap: price * parseInt(stock.ts) || undefined, // ts = Total Shares Outstanding
+            pe: eps > 0 ? price / eps : undefined, // P/E calculation
+            pb: bookValue > 0 ? price / bookValue : undefined, // P/B calculation
+            dividendYield: dividend > 0 ? (dividend / price) * 100 : undefined // Dividend yield %
+          };
+        });
 
       // Apply filters
       if (filters.minPrice !== undefined) {
@@ -163,10 +174,18 @@ export class SMTApiService {
       if (filters.maxDividendYield !== undefined) {
         stocks = stocks.filter((stock: StockData) => stock.dividendYield && stock.dividendYield <= filters.maxDividendYield!);
       }
+      if (filters.sector) {
+        stocks = stocks.filter((stock: StockData) => {
+          const originalStock = marketData.sharemarket.find((s: any) => s.sID === stock.symbol);
+          return originalStock?.iID && originalStock.iID.toLowerCase().includes(filters.sector!.toLowerCase());
+        });
+      }
+      }
 
       return stocks;
     } catch (error: any) {
-      throw new Error(`Failed to search stocks: ${error.message}`);
+      console.error('Failed to search stocks:', error);
+      return [];
     }
   }
 
