@@ -16,31 +16,36 @@ interface StockDetailModalProps {
 
 interface StockDetail {
   sharedetail: {
-    sID: number;
-    sName: string;
-    sCompanyName: string;
-    lp: number; // Last price (in cents)
-    lm: number; // Last movement (in cents)
-    hv: number; // High value
-    lv: number; // Low value
-    ov: number; // Open value
-    tv: number; // Total volume
-    eps: number; // Earnings per share
-    bv: number; // Book value
+    sID: string; // Stock Symbol
+    n: string; // Stock Name
+    lp: number; // Last price * 100
+    lm: number; // Last movement * 100
+    v: number; // Volume
+    leps: number; // Last EPS * 100
+    bv: number; // Book value * 100
     ts: number; // Total shares outstanding
-    ld: number; // Last dividend
+    ld: number; // Last dividend * 100
     iID: string; // Industry ID
   };
   ordersummary?: {
-    bq: number; // Buyer quantity
-    ba: number; // Buyer amount
-    sq: number; // Seller quantity
-    sa: number; // Seller amount
+    bq: number; // Total Bid Quantity
+    bn: number; // Total Buyers
+    sq: number; // Total Sell Quantity (negative)
+    sn: number; // Total Sellers
   };
-  orderdepth?: {
-    buyers: Array<{ price: number; quantity: number }>;
-    sellers: Array<{ price: number; quantity: number }>;
-  };
+  orders?: Array<{
+    q: number; // Quantity (negative for sell orders)
+    p: number; // Price * 100
+  }>;
+  sharenews?: Array<{
+    h: string; // Headline
+    d: string; // Description
+    tm: number; // Time ago in minutes
+  }>;
+  sharehistory1?: number[]; // 1-month price history * 100
+  sharehistory5?: number[]; // 5-month price history * 100
+  sharehistory15?: number[]; // 15-month price history * 100
+  sharehistory60?: number[]; // 60-month price history * 100
   pricehistory?: Array<{
     date: string;
     price: number;

@@ -84,12 +84,12 @@ export class SMTApiService {
     try {
       const marketData = await this.getMarketData();
       
-      // Extract ticker data from SMT API response - using authentic structure
-      if (marketData && marketData.shareMarketData) {
-        return marketData.shareMarketData.slice(0, 15).map((stock: any) => ({
-          symbol: stock.sName || stock.symbol || 'N/A',
-          price: parseFloat(stock.sPrice) / 100 || 0, // SMT API returns price * 100
-          changePercent: parseFloat(stock.sChangePercent) || parseFloat(stock.sChange) || 0
+      // Extract ticker data from SMT API response - using authentic structure from guide
+      if (marketData && marketData.sharemarket) {
+        return marketData.sharemarket.slice(0, 15).map((stock: any) => ({
+          symbol: stock.sID || 'N/A', // sID is the stock symbol
+          price: parseFloat(stock.lp) / 100 || 0, // lp = Last Price * 100
+          changePercent: parseFloat(stock.lm) / 100 || 0 // lm = Last Movement * 100
         }));
       }
       

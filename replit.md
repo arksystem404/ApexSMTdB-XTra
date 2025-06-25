@@ -115,6 +115,12 @@ Required environment variables:
     - AI Deep Dive Analysis with Ray Dalio-style systematic evaluation
     - Order depth visualization and comprehensive financial metrics
     - Real-time price history with trading signals and volume analysis
+    - **Authentic SMT API Data Structure**: Updated to match original creator's guide
+      - Proper field mappings (sID, n, lp, lm, v, leps, bv, ts, ld, iID)
+      - Correct price formatting (dividing by 100 for display)
+      - Order book with individual orders and buyer/seller counts
+      - Stock-specific news integration with sharenews array
+      - Historical price data arrays (sharehistory1, sharehistory5, etc.)
 
 ## Changelog
 
